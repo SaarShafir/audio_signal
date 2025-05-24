@@ -62,6 +62,4 @@ ENV/
 
 # Mac
 .DS_Store
-
-# mkdocs
-site/
+.devcontainer/site/
