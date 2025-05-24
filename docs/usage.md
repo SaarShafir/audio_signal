@@ -37,3 +37,21 @@ kernel = torch.ones(1, 100) / 100  # simple moving average filter
 convolved = sig.convolve(kernel)
 correlated = sig.correlate(kernel)
 ```
+
+## AudioSignal IS a torch.Tensor
+
+```python
+from matplotlib import pyplot as plt
+
+a = AudioSignal.wave(1000,1,8000)
+b = AudioSignal.wave(2000,1,8000)
+c = torch.hstack([a,b])
+print(c.sample_rate)
+
+spectrogram = torch.stft(c,256,return_complex=True).abs()
+plt.figure(figsize=(5,10))
+plt.imshow(spectrogram[0])
+plt.show()
+```
+
+![Spectrogram Example](assets/spectrogram.png)
