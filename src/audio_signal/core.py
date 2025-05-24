@@ -10,9 +10,11 @@ class CoreAudioSignal(torch.Tensor):
     A low-level subclass of torch.Tensor that represents an audio signal with an attached sample rate.
     Supports initialization from various formats (file path, numpy array, torch tensor)
     """
-    def __new__(cls,
-                audio_source: Union[torch.Tensor, np.ndarray, str, bytes],
-                sample_rate: int = None):
+    def __new__(
+        cls,
+        audio_source: Union[torch.Tensor, np.ndarray, str, bytes],
+        sample_rate: int = None
+    ) -> "CoreAudioSignal":
         """
         Create a new CoreAudioSignal instance from various audio sources.
 
@@ -56,7 +58,7 @@ class CoreAudioSignal(torch.Tensor):
         return obj
 
     @property
-    def sample_rate(self):
+    def sample_rate(self) -> int:
         """
         Returns the sample rate of the audio signal.
 
@@ -66,7 +68,7 @@ class CoreAudioSignal(torch.Tensor):
         return self._sample_rate
 
 
-    def resample(self, new_sample_rate):
+    def resample(self, new_sample_rate: int) -> "CoreAudioSignal":
         """
         Resample the audio signal to a new sample rate.
 
@@ -80,7 +82,13 @@ class CoreAudioSignal(torch.Tensor):
         return type(self)(result,new_sample_rate)
 
     @classmethod
-    def __torch_function__(cls, func, types, args=(), kwargs=None):
+    def __torch_function__(
+        cls,
+        func,
+        types,
+        args=(),
+        kwargs=None
+    ):
         if kwargs is None:
             kwargs = {}
 
@@ -121,10 +129,10 @@ class CoreAudioSignal(torch.Tensor):
         result._sample_rate = sr
         return result
 
-    def _from_tensor(self, tensor):
+    def _from_tensor(self, tensor: torch.Tensor) -> "CoreAudioSignal":
         return type(self)(tensor,self._sample_rate)
 
-    def clone(self):
+    def clone(self) -> "CoreAudioSignal":
         """
         Return a copy of the audio signal.
 
@@ -133,7 +141,7 @@ class CoreAudioSignal(torch.Tensor):
         """
         return self._from_tensor(super().clone())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return super().__repr__() + f', sample_rate={self.sample_rate}'
 
 class AudioSignal(CoreAudioSignal):
@@ -143,7 +151,7 @@ class AudioSignal(CoreAudioSignal):
     """
 
     @classmethod
-    def wave(cls, freq, time, sr):
+    def wave(cls, freq: float, time: float, sr: int) -> "AudioSignal":
         """
         Generate a sine wave AudioSignal.
 
@@ -159,7 +167,7 @@ class AudioSignal(CoreAudioSignal):
         wf = torch.sin(2*np.pi*freq*t)
         return cls(wf.unsqueeze(0),sr)
 
-    def play(self):
+    def play(self) -> Audio:
         """
         Play the audio signal in a Jupyter/IPython environment.
 
@@ -168,7 +176,7 @@ class AudioSignal(CoreAudioSignal):
         """
         return Audio(self,rate=self.sample_rate)
 
-    def save(self, path):
+    def save(self, path: str) -> None:
         """
         Save the audio signal to a file.
 
@@ -177,7 +185,7 @@ class AudioSignal(CoreAudioSignal):
         """
         ta.save(path,self,self.sample_rate)
 
-    def speed(self, factor: float):
+    def speed(self, factor: float) -> "AudioSignal":
         """
         Change the playback speed by adjusting the sample rate.
 
@@ -190,7 +198,7 @@ class AudioSignal(CoreAudioSignal):
         self._sample_rate = int(self._sample_rate*factor)
         return self
 
-    def convolve(self, kernel):
+    def convolve(self, kernel: torch.Tensor) -> "AudioSignal":
         """
         Convolve the audio signal with a kernel.
 
@@ -202,7 +210,7 @@ class AudioSignal(CoreAudioSignal):
         """
         return self._from_tensor(ta.functional.convolve(self,kernel))
     
-    def correlate(self, kernel):
+    def correlate(self, kernel: torch.Tensor) -> "AudioSignal":
         """
         Correlate the audio signal with a kernel.
 
