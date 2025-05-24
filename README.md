@@ -25,9 +25,3 @@ sig.play()
 ```
 
 See [docs/usage.md](docs/usage.md) for more examples.
-
-# ...no changes to README.md, just shell commands below...
-
-git add .
-git commit -m "Update docs and theme; improve usage and appearance"
-git push

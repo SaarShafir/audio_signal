@@ -17,8 +17,6 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  logo: assets/logo.png  # Place your logo at docs/assets/logo.png
-  favicon: assets/favicon.ico  # Place your favicon at docs/assets/favicon.ico
   features:
     - navigation.tabs
     - navigation.top
