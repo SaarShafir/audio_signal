@@ -1,4 +1,4 @@
-# Usage Examples
+# Basic Usage 
 
 ## Generate and play a sine wave
 
@@ -37,6 +37,7 @@ kernel = torch.ones(1, 100) / 100  # simple moving average filter
 convolved = sig.convolve(kernel)
 correlated = sig.correlate(kernel)
 ```
+# Basic Usage 
 
 ## AudioSignal IS a torch.Tensor
 
@@ -55,3 +56,32 @@ plt.show()
 ```
 
 ![Spectrogram Example](assets/spectrogram.png)
+
+
+## Use it for every torch compatible operation (including nn)
+here is a small convnet taking an AudioSignal as input
+
+```python
+from torch import nn
+# from audio_signal import AudioSignal
+
+class ConvBlock(nn.Module):
+  def __init__(self):
+    super().__init__()
+
+    self.conv = nn.Conv1d(1,1,3,1,1)
+    self.bn = nn.BatchNorm1d(1)
+    self.relu = nn.ReLU()
+    self.pool = nn.MaxPool1d(2)
+  def forward(self,x):
+    x = self.conv(x)
+    x = self.bn(x)
+    x = self.relu(x)
+    x = self.pool(x)
+    return x
+
+a = AudioSignal.wave(1000,1,8000)
+model = ConvBlock()
+model(a.unsqueeze(0)).shape
+# torch.Size([1, 1, 4000])
+```
