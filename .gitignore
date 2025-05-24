@@ -62,4 +62,5 @@ ENV/
 
 # Mac
 .DS_Store
-.devcontainer/site/
+.devcontainer/
+site/
